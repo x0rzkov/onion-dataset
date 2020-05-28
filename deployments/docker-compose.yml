@@ -1,55 +1,90 @@
-version: '3'
-
+---
+version: '3.7'
 services:
+
   nats:
     image: nats:2.1.6-alpine3.11
     logging:
       driver: none
+    networks:
+    - internal
+
   torproxy:
     image: dperson/torproxy:latest
     logging:
       driver: none
+    networks:
+    - internal
+
   elasticsearch:
     image: elasticsearch:7.5.1
     logging:
       driver: none
     environment:
-      - discovery.type=single-node
-      - JAVA_OPTS=-Xms2g -Xmx2g
+    - discovery.type=single-node
+    - JAVA_OPTS=-Xms2g -Xmx2g
+    networks:
+    - internal
+
   kibana:
     image: kibana:7.5.1
     logging:
       driver: none
     depends_on:
-      - elasticsearch
+    - elasticsearch
     ports:
-      - 15004:5601
+    - 15004:5601
+    networks:
+    - web
+    - internal
+
   crawler:
     image: trandoshan.io/crawler:latest
     command: --log-level debug --nats-uri nats --tor-uri torproxy:9050
     restart: always
     depends_on:
-      - nats
-      - torproxy
-  #feeder:
-  #  image: trandoshan.io/feeder:latest
-  #  command: --log-level debug --nats-uri nats --url https://www.facebookcorewwwi.onion
+    - nats
+    - torproxy
+    networks:
+    - internal
+
+  feeder:
+    image: trandoshan.io/feeder:latest
+    command: --log-level debug --nats-uri nats --url https://www.facebookcorewwwi.onion
+    networks:
+    - web
+    - internal
+
   scheduler:
     image: trandoshan.io/scheduler:latest
     command: --log-level debug --nats-uri nats --api-uri http://api:8080
     restart: always
     depends_on:
-      - nats
+    - nats
+    networks:
+    - internal
+
   persister:
     image: trandoshan.io/persister:latest
     command: --log-level debug --nats-uri nats --api-uri http://api:8080
     restart: always
     depends_on:
-      - nats
-      - api
+    - nats
+    - api
+    networks:
+    - internal
+
   api:
     image: trandoshan.io/api:latest
     command: --log-level debug --elasticsearch-uri http://elasticsearch:9200
     restart: always
     depends_on:
-      - elasticsearch
+    - elasticsearch
+    networks:
+    - web
+    - internal
+
+networks:
+  internal:
+  web:
+    external: true
