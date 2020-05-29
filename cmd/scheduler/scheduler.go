@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/creekorful/trandoshan/internal/scheduler"
 	"os"
+
+	"github.com/creekorful/trandoshan/internal/scheduler"
 )
 
 func main() {

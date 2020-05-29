@@ -4,16 +4,18 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	tlog "github.com/creekorful/trandoshan/internal/log"
+	"net/http"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/elastic/go-elasticsearch/v7"
 	"github.com/elastic/go-elasticsearch/v7/esapi"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/urfave/cli/v2"
-	"net/http"
-	"regexp"
-	"strings"
-	"time"
+
+	tlog "github.com/creekorful/trandoshan/internal/log"
 )
 
 var (

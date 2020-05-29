@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/creekorful/trandoshan/internal/api"
 	"os"
+
+	"github.com/creekorful/trandoshan/internal/api"
 )
 
 func main() {

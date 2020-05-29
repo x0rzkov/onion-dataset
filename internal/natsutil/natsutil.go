@@ -3,6 +3,7 @@ package natsutil
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/nats-io/nats.go"
 )
 

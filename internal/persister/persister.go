@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
+	"github.com/nats-io/nats.go"
+	"github.com/sirupsen/logrus"
+	"github.com/urfave/cli/v2"
+
 	"github.com/creekorful/trandoshan/internal/api"
 	"github.com/creekorful/trandoshan/internal/log"
 	"github.com/creekorful/trandoshan/internal/natsutil"
 	"github.com/creekorful/trandoshan/pkg/proto"
-	"github.com/nats-io/nats.go"
-	"github.com/sirupsen/logrus"
-	"github.com/urfave/cli/v2"
-	"net/http"
 )
 
 // GetApp return the persister app

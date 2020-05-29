@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/creekorful/trandoshan/internal/persister"
 	"os"
+
+	"github.com/creekorful/trandoshan/internal/persister"
 )
 
 func main() {

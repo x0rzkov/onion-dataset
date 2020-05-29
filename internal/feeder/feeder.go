@@ -1,12 +1,16 @@
 package feeder
 
 import (
-	"github.com/creekorful/trandoshan/internal/log"
-	"github.com/creekorful/trandoshan/internal/natsutil"
-	"github.com/creekorful/trandoshan/pkg/proto"
+	"encoding/csv"
+	"os"
+
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+
+	"github.com/creekorful/trandoshan/internal/log"
+	"github.com/creekorful/trandoshan/internal/natsutil"
+	"github.com/creekorful/trandoshan/pkg/proto"
 )
 
 // GetApp return the feeder app
@@ -26,6 +30,11 @@ func GetApp() *cli.App {
 				Name:     "url",
 				Usage:    "URL to send to the crawler",
 				Required: true,
+			},
+			&cli.StringFlag{
+				Name:     "list",
+				Usage:    "List of URLs to send to the crawler (one per line in csv file)",
+				Required: false,
 			},
 		},
 		Action: execute,
@@ -47,13 +56,37 @@ func execute(ctx *cli.Context) error {
 	}
 	defer nc.Close()
 
-	// Publish the message
-	if err := natsutil.PublishJSON(nc, proto.URLTodoSubject, &proto.URLTodoMsg{URL: ctx.String("url")}); err != nil {
-		logrus.Errorf("Unable to publish URL: %s", err)
-		return err
-	}
+	// list of urls to crawl
+	if _, err := os.Stat(ctx.String("list")); !os.IsNotExist(err) {
+		file, err := os.Open(ctx.String("list"))
+		if err != nil {
+			return err
+		}
+		reader := csv.NewReader(file)
+		reader.Comma = ','
+		reader.LazyQuotes = true
+		data, err := reader.ReadAll()
+		if err != nil {
+			return err
+		}
+		for _, link := range data {
+			// Publish the message
+			if err := natsutil.PublishJSON(nc, proto.URLTodoSubject, &proto.URLTodoMsg{URL: link}); err != nil {
+				logrus.Errorf("Unable to publish URL: %s", err)
+				return err
+			}
+			logrus.Infof("URL %s successfully sent to the crawler", link)
+		}
 
-	logrus.Infof("URL %s successfully sent to the crawler", ctx.String("url"))
+	} else {
+		// Publish the message
+		if err := natsutil.PublishJSON(nc, proto.URLTodoSubject, &proto.URLTodoMsg{URL: ctx.String("url")}); err != nil {
+			logrus.Errorf("Unable to publish URL: %s", err)
+			return err
+		}
+
+		logrus.Infof("URL %s successfully sent to the crawler", ctx.String("url"))
+	}
 
 	return nil
 }

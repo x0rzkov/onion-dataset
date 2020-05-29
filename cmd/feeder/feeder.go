@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/creekorful/trandoshan/internal/feeder"
 	"os"
+
+	"github.com/creekorful/trandoshan/internal/feeder"
 )
 
 func main() {

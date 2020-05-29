@@ -2,6 +2,7 @@ package natsutil
 
 import (
 	"context"
+
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 )

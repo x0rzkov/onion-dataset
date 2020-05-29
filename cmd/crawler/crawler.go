@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/creekorful/trandoshan/internal/crawler"
 	"os"
+
+	"github.com/creekorful/trandoshan/internal/crawler"
 )
 
 func main() {

@@ -2,16 +2,18 @@ package crawler
 
 import (
 	"crypto/tls"
-	"github.com/creekorful/trandoshan/internal/log"
-	"github.com/creekorful/trandoshan/internal/natsutil"
-	"github.com/creekorful/trandoshan/pkg/proto"
+	"time"
+
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpproxy"
 	"mvdan.cc/xurls/v2"
-	"time"
+
+	"github.com/creekorful/trandoshan/internal/log"
+	"github.com/creekorful/trandoshan/internal/natsutil"
+	"github.com/creekorful/trandoshan/pkg/proto"
 )
 
 // GetApp return the crawler app
